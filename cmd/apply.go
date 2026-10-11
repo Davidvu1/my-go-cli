@@ -2,7 +2,9 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 
+	"github.com/Davidvu1/my-go-cli/internal/installer"
 	"github.com/Davidvu1/my-go-cli/internal/templates"
 	"github.com/charmbracelet/huh"
 	"github.com/spf13/cobra"
@@ -40,6 +42,21 @@ var applyCmd = &cobra.Command{
 			return fmt.Errorf("run picker: %w", err)
 		}
 		fmt.Println("you picked:", selected)
+
+		targetDir, err := os.Getwd()
+
+		if err != nil {
+			return fmt.Errorf("get current directory: %w", err)
+		}
+
+		for _, name := range selected {
+			err := installer.CopySkill(templates.FS, name, targetDir)
+
+			if err != nil {
+				return fmt.Errorf("copy skill %s: %w", name, err)
+			}
+
+		}
 		return nil
 	},
 }
